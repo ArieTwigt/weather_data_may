@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 
 # initate a flask app
@@ -9,7 +9,7 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     pass
-    return "Hello world!"
+    return render_template("index.html")
 
 
 # launch the application
