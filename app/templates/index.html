@@ -34,7 +34,7 @@
             <ul>
               {% for prediction_request in prediction_requests %}
               <li>
-                <button type="button" class="btn btn-secondary">{{ prediction_request.country_code }} -{{ prediction_request.city }}</button>
+                <a type="button" class="btn btn-secondary" href="/get_weather_data/{{prediction_request.id}}">{{ prediction_request.country_code }} -{{ prediction_request.city }}</a>
                 
                 <a type="button" class="btn btn-warning" href="/edit_prediction_request/{{prediction_request.id}}">EDIT</a>
                 
@@ -45,13 +45,34 @@
     </div>
 
     <div class="col-md-9">
-        <div class="card">
-            <div class="card-header">
-                Predictions
-            </div>
-            <div class="card-body">
-            </div>
-        </div>
+      {% if predictions_dict is defined %}
+      <div class="card">
+          <div class="card-header">Weather predictions for {{ selected_country_code }} {{ selected_city }}</div>
+          <div class="card-body">
+              
+                  <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <th> Date </th>
+                              <th> Description </th>
+                              <th> Temperature </th>
+                              <th> Feels like </th>
+                              <th> Rain </th>
+                          </tr>
+                      </thead>
+                  {% for key, value in predictions_dict.items() %}
+                      <tr>
+                          <td>{{key}}</td>
+                          <td>{{value['description']}}</td>
+                          <td>{{value['temperature']}}</td>
+                          <td>{{value['feels_like']}}</td>
+                          <td>{{value['rain']}}</td>
+                      </tr>
+                  {% endfor %}
+                  </table>
+          </div>
+      </div>
+      {% endif %}
     </div>
 </div>
 

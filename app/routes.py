@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from app import app, db
 from app.forms import PredictionRequestForm
 from app.models import PredictionRequest
+from app.utils.weather import get_weater_data
 
 
 # create the first route
@@ -71,3 +72,25 @@ def edit_prediction_request(id):
                            form=form)
 
     
+# route for getting the weather data
+@app.route('/get_weather_data/<id>')
+def get_weather_data(id):
+    # get the id
+    prediction_request = PredictionRequest.query.get(id)
+
+    # get the city from the prediction_request
+    city = prediction_request.city
+
+    # use the function to get the data from the city
+    predictions_dict = get_weater_data(city)
+
+    # get the form
+    form = PredictionRequestForm()
+
+    # get the prediction requests
+    prediction_requests = PredictionRequest.query.all()
+
+    return render_template("index.html", 
+                           form=form, 
+                           prediction_requests=prediction_requests,
+                           predictions_dict=predictions_dict)
