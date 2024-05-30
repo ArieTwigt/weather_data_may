@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Edit the Prediction Request</h1>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    
+    {% include '_flashes.html' %}
+
+    <label for="country_code" class="form-label">Country Code:</label>
+    {{ form.country_code(size=32, class="form-control", placeholder="NL") }}
+
+    <label for="city" class="form-label space-top">City:</label>
+    
+    {% for error in form.city.errors %}
+      <span>{{ error }}</span>
+    {% endfor %}
+
+    {{ form.city(size=32, class="form-control", placeholder="Amsterdam") }}
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
+{% endblock %}

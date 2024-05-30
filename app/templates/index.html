@@ -31,6 +31,16 @@
                 {{ form.submit(class="btn btn-primary") }}
               </form>
             </div>
+            <ul>
+              {% for prediction_request in prediction_requests %}
+              <li>
+                <button type="button" class="btn btn-secondary">{{ prediction_request.country_code }} -{{ prediction_request.city }}</button>
+                
+                <a type="button" class="btn btn-warning" href="/edit_prediction_request/{{prediction_request.id}}">EDIT</a>
+                
+              </li>
+              {% endfor %}
+            </ul>
         </div>
     </div>
 

@@ -1,4 +1,4 @@
-from flask import render_template, request, flash
+from flask import render_template, request, flash, redirect, url_for
 from sqlalchemy.exc import IntegrityError
 from app import app, db
 from app.forms import PredictionRequestForm
@@ -10,6 +10,7 @@ from app.models import PredictionRequest
 def index():
     # initate the form
     form = PredictionRequestForm()
+    
     
     
     # check the type of request
@@ -33,6 +34,40 @@ def index():
             db.session.rollback()
             flash(f"Combination <b>{data['country_code']} - {data['city']}</b> already exists", "danger")
 
+    # get all the saved prediction requests
+    prediction_requests = PredictionRequest.query.all()
 
     return render_template("index.html",
-                           form = form)
+                           form = form,
+                           prediction_requests=prediction_requests)
+
+
+# route for modifying an existing prediction request
+@app.route('/edit_prediction_request/<id>', methods=['GET', 'POST'])
+def edit_prediction_request(id):
+    # get the prediction request with the given id
+    prediction_request = PredictionRequest.query.get(id)
+
+    # render the form
+    form = PredictionRequestForm(obj=prediction_request)
+
+    # if we get a post request
+    if request.method == 'POST':
+        # get the data form the form
+        data = form.data
+        
+        # modify the prediction_request
+        prediction_request.city = data['city']
+        prediction_request.country_code = data['country_code']
+
+        # commit the changes
+        db.session.commit()
+
+        # return to the index
+        flash("Succesfully modified", "success")
+        return redirect(url_for('index'))
+
+    return render_template("edit_prediction_request.html",
+                           form=form)
+
+    
