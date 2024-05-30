@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1> Predictions </h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+              Insert Prediction
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">Insert city</h5>
+              <p class="card-text">Insert a city for the weather predictions</p>
+
+              <form method="POST" action="/">
+                {{ form.hidden_tag() }}
+                
+                {% include '_flashes.html' %}
+
+                <label for="country_code" class="form-label">Country Code:</label>
+                {{ form.country_code(size=32, class="form-control", placeholder="NL") }}
+
+                <label for="city" class="form-label space-top">City:</label>
+                
+                {% for error in form.city.errors %}
+                  <span>{{ error }}</span>
+                {% endfor %}
+
+                {{ form.city(size=32, class="form-control", placeholder="Amsterdam") }}
+                {{ form.submit(class="btn btn-primary") }}
+              </form>
+            </div>
+            <ul>
+              {% for prediction_request in prediction_requests %}
+              <li>
+                <a type="button" class="btn btn-secondary" href="/get_weather_data/{{prediction_request.id}}">{{ prediction_request.country_code }} -{{ prediction_request.city }}</a>
+                
+                <a type="button" class="btn btn-warning" href="/edit_prediction_request/{{prediction_request.id}}">EDIT</a>
+                
+              </li>
+              {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+      {% if predictions_dict is defined %}
+      <div class="card">
+          <div class="card-header">Weather predictions for {{ selected_country_code }} {{ selected_city }}</div>
+          <div class="card-body">
+              
+                  <table class="table table-striped">
+                      <thead>
+                          <tr>
+                              <th> Date </th>
+                              <th> Description </th>
+                              <th> Temperature </th>
+                              <th> Feels like </th>
+                              <th> Rain </th>
+                          </tr>
+                      </thead>
+                  {% for key, value in predictions_dict.items() %}
+                      <tr>
+                          <td>{{key}}</td>
+                          <td>{{value['description']}}</td>
+                          <td>{{value['temperature']}}</td>
+                          <td>{{value['feels_like']}}</td>
+                          <td>{{value['rain']}}</td>
+                      </tr>
+                  {% endfor %}
+                  </table>
+          </div>
+      </div>
+      {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
